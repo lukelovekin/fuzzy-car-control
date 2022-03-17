@@ -1,11 +1,11 @@
 """
 Rules
-R1 x is this and y is this then z
-R2 x is this and y is this then z
-R3 x is this and y is this then z
-R4 x is this and y is this then z
-R5 x is this and y is this then z
-R6 x is this and y is this then z
+R1: x is this and y is this then z
+R2: x is this and y is this then z
+R3: x is this and y is this then z
+R4: x is this and y is this then z
+R5: x is this and y is this then z
+R6: x is this and y is this then z
 
 Partitions:
 Brake: Open left (a = 0, b = 100)

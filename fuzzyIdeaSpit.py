@@ -1,4 +1,8 @@
 """
+Dummy Code,
+"""
+
+"""
 Rules
 R1: x is this and y is this then z
 R2: x is this and y is this then z
@@ -44,8 +48,13 @@ print("\n")
     # accelerate = 0; brake = 0; stop = 0
 
     # if x > y and z * num:
-        # accelerate = 
+        # accelerate =  rightPart(x,0,100)
     # if x > y and z * num:
-        # brake = openLeft(x,0,100)
+        # brake = leftPart(x,0,100)
     # if x > y and z * num:
+        # brake = middlePart(x,0,100)
+
+    # return accelerate, brake, stop
+
+# etc etc
 

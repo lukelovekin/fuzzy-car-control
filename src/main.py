@@ -221,3 +221,82 @@ def graph(universe, mem_functions, x, defuzz_method):
 result = defuzz(x, [w_mfx_on, w_mfx_off], 'centroid')
 print(result)
 graph(x, [w_mfx_on, w_mfx_off], result, 'centroid')
+
+
+# Testing
+'''
+LEFT = n < -30
+RIGHT = n > 30
+FRONT = -30 < n < 30
+
+V CLOSE = 0 - 1.24
+CLOSE = 1.25 - 1.74
+CLOSE/MID = 1.75 = 2.24
+MID = 2.25 - 2.74
+FAR = 2.75 - 3.24
+V FAR = 3.25 - 4.5+
+''' 
+
+def test_case(t_dist, angle):
+
+        if angle <= -31 or angle >= 31:
+            # Rule 7
+            return {"d":t_dist, "a":angle, "warning":'OFF', "decel":'NONE', "brake":'NONE'}
+        else:
+            # Rule 6
+            if t_dist < 1.25:
+                return {"d":t_dist, "a":angle, "warning":'ON', "decel":'HIGH', "brake":'HIGH'}
+            
+            # Rule 5
+            if t_dist < 1.75:
+                return {"d":t_dist, "a":angle, "warning":'ON', "decel":'HIGH', "brake":'LOW'}
+            
+            # Rule 4
+            if t_dist < 2.25:
+                return {"d":t_dist, "a":angle, "warning":'ON', "decel":'HIGH', "brake":'NONE'}
+
+            # Rule 3
+            if t_dist < 2.75:
+                return {"d":t_dist, "a":angle, "warning":'ON', "decel":'LOW', "brake":'NONE'}
+
+            # Rule 2
+            if t_dist < 3.25:
+                return {"d":t_dist, "a":angle, "warning":'ON', "decel":'NONE', "brake":'NONE'}
+
+            # Rule 1
+            if t_dist > 3.25:
+                return {"d":t_dist, "a":angle, "warning":'OFF', "decel":'NONE', "brake":'NONE'}
+
+# Careful this takes around 60 seconds to run and writes over 4800 lines to a csv which can be found in the file explorer to the left
+
+def generate_csv():
+    header = ["Distance", "Angle","BrakeVal", "Brake", "DecelerateVal", "Decelerate", "WarningVal", "Warning", "WarningErrorTestExpectation", "DecelerateErrorTestExpectation", "BrakeErrorTestExpectation"]
+    rows = []
+
+    f = open('test_csv.csv', 'w')
+    writer = csv.writer(f)
+    writer.writerow(header)
+
+    # Check all possible crisp inputs
+    for angle in range(-60, 61):
+        for t_dist in np.arange(0, 4.6, 0.1):
+
+            warn_err = decel_err = brake_err = None
+            test_case_res = test_case(t_dist, angle)
+
+            val_result, output = process_input(t_dist, angle, True)
+            warn_result = print_warning(output, True)
+
+            if test_case_res["warning"] != warn_result["warning"]:
+                warn_err = test_case_res["warning"]
+            if test_case_res["decel"] != warn_result["decelerate"]:
+                decel_err = test_case_res["decel"]
+            if test_case_res["brake"] != warn_result["brake"]:
+                brake_err = test_case_res["brake"]
+                
+            rows.append([t_dist, angle, val_result['brake'], warn_result['brake'], val_result['decelerate'], warn_result['decelerate'], val_result['warning'], warn_result['warning'], warn_err, decel_err, brake_err])
+
+    writer.writerows(rows)
+    f.close()
+
+# generate_csv()
